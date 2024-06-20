@@ -35,9 +35,9 @@ public class TestCases {
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 //        driver.get(configReader.getUrl());
-        mainPage = new MainPage(driver);
-        loginPage = new LoginPage(driver);
-        forgotPasswordPage = new ForgotPasswordPage(driver);
+//        mainPage = new MainPage(driver);
+//        loginPage = new LoginPage(driver);
+//        forgotPasswordPage = new ForgotPasswordPage(driver);
     }
 
     @BeforeMethod
@@ -47,6 +47,7 @@ public class TestCases {
 
     @Test
     public void verifyPhoneNumber() {
+        mainPage = new MainPage(driver);
         Assert.assertEquals(mainPage.getPhoneNumber(), "080-26252625", "phone number is not displayed");
     }
 
