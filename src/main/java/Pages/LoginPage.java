@@ -6,17 +6,20 @@ import org.openqa.selenium.support.FindBy;
 
 public class LoginPage extends BasePage {
 
-    @FindBy(id = "userName")
+    @FindBy(xpath = "//div[@class='inp-container extra err']/input")
     private WebElement emailField;
 
-    @FindBy(id="")
+    @FindBy(xpath="//div[@class='inp-container'][2]")
     private WebElement mobileNoField;
 
-    @FindBy(id = "password")
+    @FindBy(xpath = "//div[@class='inp-container'][3]")
     private WebElement passwordField;
 
-    @FindBy(linkText = "Forgot Password")
+    @FindBy(xpath = "//div[@class='linkForgotPassword']")
     private WebElement forgotPasswordLink;
+
+    @FindBy(xpath = "//div[@class='alert--content error login--alert']")
+    private WebElement errorMessage;
 
     public LoginPage(WebDriver driver) {
         super(driver);
@@ -36,5 +39,9 @@ public class LoginPage extends BasePage {
 
     public void clickForgotPassword() {
         forgotPasswordLink.click();
+    }
+
+    public boolean isErrorMessageDisplayed() {
+        return errorMessage.isDisplayed();
     }
 }
