@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.TimeUnit;
 
 public class TestCases {
@@ -47,11 +48,9 @@ public class TestCases {
     }
 
     @Test(dataProvider = "loginData")
-    public void testLogin(String email, String mobileNo , String password) throws InterruptedException {
+    public void testLogin(String email, String mobileNo , String password){
         MainPage mainPage = new MainPage(driver);
         mainPage.clickSignIn();
-        Thread.sleep(2000);
-
         LoginPage loginPage = new LoginPage(driver);
         Assert.assertEquals(driver.getCurrentUrl(), "https://ksrtc.in/login", "URL mismatch after clicking sign in.");
         loginPage.enterEmail(email);
@@ -59,26 +58,29 @@ public class TestCases {
         loginPage.enterPassword(password);
     }
 
-//    @Test(dataProvider = "forgotPasswordData")
-//    public void testForgotPassword(String email, String mobileNo) {
-//        MainPage mainPage = new MainPage(driver);
-//        mainPage.clickSignIn();
-//
-//        LoginPage loginPage = new LoginPage(driver);
-//        loginPage.enterEmail(email);
-//        loginPage.enterMobileNo(mobileNo);
-//        loginPage.clickForgotPassword();
-//
-//        if (loginPage.isErrorMessageDisplayed()) {
-//            File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-//            try {
+    @Test(dataProvider = "forgotPasswordData")
+    public void testForgotPassword(String email, String mobileNo){
+        MainPage mainPage = new MainPage(driver);
+        mainPage.clickSignIn();
+
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.enterEmail(email);
+        loginPage.enterMobileNo(mobileNo);
+        loginPage.clickForgotPassword();
+
+        if (loginPage.isErrorMessageDisplayed()) {
+            File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            try {
+                Files.createDirectories(Paths.get("screenshots"));
+                // Save the screenshot to the specified location, overwriting if it exists
+                Files.copy(screenshot.toPath(), Paths.get("screenshots", "forgot_password_error.png"), StandardCopyOption.REPLACE_EXISTING);
 //                Files.copy(screenshot.toPath(), Paths.get("screenshots", "forgot_password_error.png"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Assert.assertTrue(loginPage.isErrorMessageDisplayed(), "Error message not displayed for invalid email.");
-//        }
-//    }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Assert.assertTrue(loginPage.isErrorMessageDisplayed(), "Error message not displayed for invalid email.");
+        }
+    }
 
     @DataProvider(name = "loginData")
     public Object[][] getLoginData() {
@@ -86,11 +88,11 @@ public class TestCases {
         return excelUtils.getTestData();
     }
 
-//    @DataProvider(name = "forgotPasswordData")
-//    public Object[][] getForgotPasswordData() {
-//        ExcelUtils excelUtils = new ExcelUtils("src/test/resources/testData.xlsx", "ForgotPasswordData");
-//        return excelUtils.getTestData();
-//    }
+    @DataProvider(name = "forgotPasswordData")
+    public Object[][] getForgotPasswordData() {
+        ExcelUtils excelUtils = new ExcelUtils("src/test/resources/testData.xlsx", "ForgotPasswordData");
+        return excelUtils.getTestData();
+    }
 
 
     @AfterClass
